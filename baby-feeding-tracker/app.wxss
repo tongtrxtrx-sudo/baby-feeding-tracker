@@ -8,7 +8,7 @@ page {
 
 .container {
   padding: 24rpx;
-  padding-bottom: 160rpx;
+  padding-bottom: 200rpx;
 }
 
 .card {
@@ -24,12 +24,21 @@ page {
   align-items: center;
   justify-content: center;
   height: 96rpx;
+  line-height: 96rpx;
   border-radius: 48rpx;
   font-size: 32rpx;
   font-weight: 600;
   border: none;
   padding: 0;
+  margin: 0;
   gap: 12rpx;
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.btn::after {
+  border: none;
 }
 
 .btn-primary {
@@ -143,4 +152,48 @@ page {
 .badge-primary {
   background: linear-gradient(135deg, #FFB6C1 0%, #FF6B9D 100%);
   color: #FFFFFF;
+}
+
+.btn-sm {
+  height: 72rpx;
+  line-height: 72rpx;
+  font-size: 28rpx;
+  border-radius: 36rpx;
+}
+
+.btn-lg {
+  height: 112rpx;
+  line-height: 112rpx;
+  font-size: 36rpx;
+  border-radius: 56rpx;
+}
+
+.btn-round {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+.btn-primary:active {
+  box-shadow: 0 4rpx 16rpx rgba(255, 107, 157, 0.2);
+}
+
+.btn-secondary:active {
+  background: #FFF5F8;
 }

@@ -9,30 +9,33 @@
   </view>
 
   <view wx:if="{{currentBaby}}" class="current-baby-card card">
-    <view class="baby-header flex-between">
-      <view class="baby-info">
+    <view class="welcome-decor decor-1"></view>
+    <view class="welcome-decor decor-2"></view>
+    <view class="welcome-decor decor-3"></view>
+    <view class="baby-left">
+      <view class="baby-text">
         <view class="baby-name">{{currentBaby.name}}</view>
-        <view class="baby-detail text-secondary">
+        <view class="baby-detail">
           {{currentBaby.gender === 'boy' ? '男宝' : '女宝'}} · {{ageText}}
         </view>
       </view>
-      <view class="baby-avatar">
-        <x-icon name="{{currentBaby.gender === 'boy' ? 'boy' : 'girl'}}" size="{{48}}" color="#FF8FAB" />
+      <view class="baby-stats">
+        <view class="stat-item">
+          <view class="stat-value">{{currentBaby.birthWeight || '--'}}kg</view>
+          <view class="stat-label">出生体重</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{currentBaby.birthHeight || '--'}}cm</view>
+          <view class="stat-label">出生身高</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{currentBaby.birthDate}}</view>
+          <view class="stat-label">出生日期</view>
+        </view>
       </view>
     </view>
-    <view class="baby-stats flex-between mt-20">
-      <view class="stat-item">
-        <view class="stat-value">{{currentBaby.birthWeight || '--'}}kg</view>
-        <view class="stat-label text-secondary">出生体重</view>
-      </view>
-      <view class="stat-item">
-        <view class="stat-value">{{currentBaby.birthHeight || '--'}}cm</view>
-        <view class="stat-label text-secondary">出生身高</view>
-      </view>
-      <view class="stat-item">
-        <view class="stat-value">{{currentBaby.birthDate}}</view>
-        <view class="stat-label text-secondary">出生日期</view>
-      </view>
+    <view class="baby-right">
+      <view class="baby-avatar">👧</view>
     </view>
   </view>
 

@@ -18,6 +18,11 @@ Component({
         icon: 'ruler'
       },
       {
+        pagePath: '/pages/report/report',
+        text: '报告',
+        icon: 'chart'
+      },
+      {
         pagePath: '/pages/profile/profile',
         text: '档案',
         icon: 'baby'

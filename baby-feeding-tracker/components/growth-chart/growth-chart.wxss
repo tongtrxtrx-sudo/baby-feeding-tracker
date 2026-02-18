@@ -1,7 +1,7 @@
 .growth-chart {
   position: relative;
   width: 100%;
-  height: 420rpx;
+  height: 460rpx;
 }
 
 .chart-canvas {
@@ -11,12 +11,25 @@
 
 .tooltip {
   position: absolute;
-  background: rgba(45, 52, 54, 0.9);
-  border-radius: 12rpx;
-  padding: 16rpx 20rpx;
-  transform: translate(-50%, -120%);
+  background: linear-gradient(135deg, #2D3436 0%, #1A1A2E 100%);
+  border-radius: 20rpx;
+  padding: 24rpx 28rpx;
+  transform: translate(-50%, -100%);
   pointer-events: none;
-  z-index: 10;
+  z-index: 100;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3);
+  min-width: 200rpx;
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: -12rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 12rpx solid transparent;
+  border-right: 12rpx solid transparent;
+  border-top: 14rpx solid #2D3436;
 }
 
 .tooltip-content {
@@ -24,13 +37,74 @@
 }
 
 .tooltip-title {
-  font-size: 22rpx;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 4rpx;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 12rpx;
+  font-weight: 500;
+  text-align: center;
 }
 
 .tooltip-value {
-  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+  padding: 12rpx 16rpx;
+  background: linear-gradient(135deg, #FF6B9D 0%, #FF8FAB 100%);
+  border-radius: 12rpx;
+}
+
+.tooltip-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.tooltip-data {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.tooltip-standards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx 16rpx;
+  justify-content: center;
+}
+
+.tooltip-standard {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.standard-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+}
+
+.standard-label {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.standard-value {
+  font-size: 22rpx;
   font-weight: 600;
   color: #FFFFFF;
+}
+
+.tooltip-arrow {
+  position: absolute;
+  bottom: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10rpx solid transparent;
+  border-right: 10rpx solid transparent;
+  border-top: 12rpx solid #2D3436;
 }

@@ -7,11 +7,14 @@
     data-index="{{index}}"
     data-path="{{item.pagePath}}"
   >
-    <view class="tab-icon {{selected === index ? 'active' : ''}}">
-      <text wx:if="{{item.icon === 'home'}}">🏠</text>
-      <text wx:elif="{{item.icon === 'bottle'}}">🍼</text>
-      <text wx:elif="{{item.icon === 'ruler'}}">📏</text>
-      <text wx:elif="{{item.icon === 'baby'}}">👶</text>
+    <view class="tab-icon-wrapper">
+      <view class="tab-icon">
+        <text wx:if="{{item.icon === 'home'}}">🏠</text>
+        <text wx:elif="{{item.icon === 'bottle'}}">🍼</text>
+        <text wx:elif="{{item.icon === 'ruler'}}">📏</text>
+        <text wx:elif="{{item.icon === 'chart'}}">📊</text>
+        <text wx:elif="{{item.icon === 'baby'}}">👶</text>
+      </view>
     </view>
     <view class="tab-text">{{item.text}}</view>
   </view>

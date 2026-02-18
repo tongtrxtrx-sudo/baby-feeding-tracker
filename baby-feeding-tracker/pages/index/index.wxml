@@ -9,29 +9,30 @@
 
   <view wx:if="{{currentBaby}}" class="content">
     <view class="welcome-card card">
-      <view class="welcome-text">
-        <view class="greeting">{{greetingText}}</view>
-        <view class="baby-name">{{currentBaby.name}} {{ageText}}</view>
-      </view>
-      <view class="welcome-actions">
-        <view class="welcome-icon">
-          <x-icon name="{{currentBaby.gender === 'boy' ? 'boy' : 'girl'}}" size="{{80}}" color="#FFFFFF" />
+      <view class="welcome-decor decor-1"></view>
+      <view class="welcome-decor decor-2"></view>
+      <view class="welcome-decor decor-3"></view>
+      <view class="welcome-left">
+        <view class="welcome-text">
+          <view class="greeting">{{greetingText}}</view>
+          <view class="baby-name">{{currentBaby.name}} {{ageText}}</view>
         </view>
+      </view>
+      <view class="welcome-right">
+        <view class="baby-avatar">👧</view>
         <view class="share-entry" bindtap="goToShare">
-          <view class="share-icon-wrap">
-            <x-icon name="users" size="{{36}}" color="#FFFFFF" />
-          </view>
+          <text class="share-icon">👨‍👩‍👧</text>
           <text class="share-text">共享</text>
         </view>
       </view>
     </view>
 
     <view class="today-summary card">
-      <view class="summary-header flex-between">
+      <view class="summary-header">
         <view class="summary-title">今日喂养</view>
         <view class="summary-date">{{todayDate}}</view>
       </view>
-      <view class="summary-stats flex-between">
+      <view class="summary-stats">
         <view class="stat-card">
           <view class="stat-number text-primary">{{todayFeedings.length}}</view>
           <view class="stat-label text-secondary">喂养次数</view>

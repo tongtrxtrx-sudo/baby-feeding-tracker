@@ -11,7 +11,38 @@
   <view class="tooltip" wx:if="{{tooltip.show}}" style="left: {{tooltip.x}}px; top: {{tooltip.y}}px;">
     <view class="tooltip-content">
       <view class="tooltip-title">{{tooltip.title}}</view>
-      <view class="tooltip-value">{{tooltip.value}}</view>
+      <view class="tooltip-value" wx:if="{{tooltip.value}}">
+        <text class="tooltip-label">宝宝</text>
+        <text class="tooltip-data">{{tooltip.value}}</text>
+      </view>
+      <view class="tooltip-standards" wx:if="{{tooltip.p50}}">
+        <view class="tooltip-standard" wx:if="{{tooltip.p3}}">
+          <text class="standard-dot" style="background: #FFB8B8;"></text>
+          <text class="standard-label">P3:</text>
+          <text class="standard-value">{{tooltip.p3}}</text>
+        </view>
+        <view class="tooltip-standard" wx:if="{{tooltip.p15}}">
+          <text class="standard-dot" style="background: #FFD4A3;"></text>
+          <text class="standard-label">P15:</text>
+          <text class="standard-value">{{tooltip.p15}}</text>
+        </view>
+        <view class="tooltip-standard" wx:if="{{tooltip.p50}}">
+          <text class="standard-dot" style="background: #A8E6CF;"></text>
+          <text class="standard-label">P50:</text>
+          <text class="standard-value">{{tooltip.p50}}</text>
+        </view>
+        <view class="tooltip-standard" wx:if="{{tooltip.p85}}">
+          <text class="standard-dot" style="background: #88D8B0;"></text>
+          <text class="standard-label">P85:</text>
+          <text class="standard-value">{{tooltip.p85}}</text>
+        </view>
+        <view class="tooltip-standard" wx:if="{{tooltip.p97}}">
+          <text class="standard-dot" style="background: #7EC8E3;"></text>
+          <text class="standard-label">P97:</text>
+          <text class="standard-value">{{tooltip.p97}}</text>
+        </view>
+      </view>
     </view>
+    <view class="tooltip-arrow"></view>
   </view>
 </view>
