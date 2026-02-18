@@ -1,0 +1,111 @@
+<view class="container">
+  <view wx:if="{{!currentBaby && babies.length === 0}}" class="empty-state">
+    <view class="empty-icon">
+      <x-icon name="baby" size="{{80}}" color="#FF8FAB" />
+    </view>
+    <view class="empty-text">还没有宝宝档案</view>
+    <view class="empty-desc">添加第一个宝宝开始记录吧</view>
+    <button class="add-btn btn-primary" bindtap="showAddModal">添加宝宝</button>
+  </view>
+
+  <view wx:if="{{currentBaby}}" class="current-baby-card card">
+    <view class="baby-header flex-between">
+      <view class="baby-info">
+        <view class="baby-name">{{currentBaby.name}}</view>
+        <view class="baby-detail text-secondary">
+          {{currentBaby.gender === 'boy' ? '男宝' : '女宝'}} · {{ageText}}
+        </view>
+      </view>
+      <view class="baby-avatar">
+        <x-icon name="{{currentBaby.gender === 'boy' ? 'boy' : 'girl'}}" size="{{48}}" color="#FF8FAB" />
+      </view>
+    </view>
+    <view class="baby-stats flex-between mt-20">
+      <view class="stat-item">
+        <view class="stat-value">{{currentBaby.birthWeight || '--'}}kg</view>
+        <view class="stat-label text-secondary">出生体重</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{currentBaby.birthHeight || '--'}}cm</view>
+        <view class="stat-label text-secondary">出生身高</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{currentBaby.birthDate}}</view>
+        <view class="stat-label text-secondary">出生日期</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{babies.length > 0}}" class="section">
+    <view class="section-header flex-between">
+      <view class="section-title">宝宝列表</view>
+      <button class="add-small-btn" bindtap="showAddModal">+ 添加</button>
+    </view>
+    <view wx:for="{{babies}}" wx:key="id" class="baby-item card" bindtap="selectBaby" data-id="{{item.id}}">
+      <view class="flex-between">
+        <view class="baby-item-info">
+          <view class="baby-item-name {{item.id === currentBaby.id ? 'active' : ''}}">
+            <x-icon name="{{item.gender === 'boy' ? 'boy' : 'girl'}}" size="{{32}}" color="#FF8FAB" />
+            <text>{{item.name}}</text>
+          </view>
+          <view class="baby-item-detail text-secondary">{{item.birthDate}}</view>
+        </view>
+        <view class="baby-item-actions">
+          <view wx:if="{{item.id === currentBaby.id}}" class="current-badge">当前</view>
+          <view class="action-btns">
+            <view class="action-btn edit" catchtap="editBaby" data-id="{{item.id}}">编辑</view>
+            <view class="action-btn delete" catchtap="deleteBaby" data-id="{{item.id}}">删除</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showModal}}" class="modal-mask" bindtap="hideModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">{{editingBaby ? '编辑宝宝' : '添加宝宝'}}</view>
+      <view class="modal-close" bindtap="hideModal">
+        <x-icon name="x" size="{{40}}" color="#999999" />
+      </view>
+    </view>
+    <view class="modal-body">
+      <view class="form-item">
+        <view class="form-label">宝宝昵称</view>
+        <input class="form-input" placeholder="请输入宝宝昵称" value="{{formData.name}}" bindinput="onInput" data-field="name" />
+      </view>
+      <view class="form-item">
+        <view class="form-label">性别</view>
+        <view class="gender-select flex">
+          <view class="gender-option {{formData.gender === 'boy' ? 'active' : ''}}" bindtap="selectGender" data-gender="boy">
+            <x-icon name="boy" size="{{32}}" color="{{formData.gender === 'boy' ? '#FF8FAB' : '#666666'}}" />
+            <text>男宝</text>
+          </view>
+          <view class="gender-option {{formData.gender === 'girl' ? 'active' : ''}}" bindtap="selectGender" data-gender="girl">
+            <x-icon name="girl" size="{{32}}" color="{{formData.gender === 'girl' ? '#FF8FAB' : '#666666'}}" />
+            <text>女宝</text>
+          </view>
+        </view>
+      </view>
+      <view class="form-item">
+        <view class="form-label">出生日期</view>
+        <picker mode="date" value="{{formData.birthDate}}" bindchange="onDateChange">
+          <view class="form-picker">{{formData.birthDate || '请选择出生日期'}}</view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <view class="form-label">出生体重(kg)</view>
+        <input class="form-input" type="digit" placeholder="例如: 3.3" value="{{formData.birthWeight}}" bindinput="onInput" data-field="birthWeight" />
+      </view>
+      <view class="form-item">
+        <view class="form-label">出生身高(cm)</view>
+        <input class="form-input" type="digit" placeholder="例如: 50" value="{{formData.birthHeight}}" bindinput="onInput" data-field="birthHeight" />
+      </view>
+    </view>
+    <view class="modal-footer flex">
+      <button class="modal-btn btn-secondary" bindtap="hideModal">取消</button>
+      <button class="modal-btn btn-primary" bindtap="saveBaby">保存</button>
+    </view>
+  </view>
+</view>

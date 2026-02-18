@@ -1,0 +1,121 @@
+<view class="container">
+  <view wx:if="{{!currentBaby}}" class="empty-state">
+    <view class="empty-icon">
+      <x-icon name="baby" size="{{80}}" color="#FF8FAB" />
+    </view>
+    <view class="empty-text">请先添加宝宝档案</view>
+    <button class="add-btn btn-primary" bindtap="goToProfile">去添加</button>
+  </view>
+
+  <view wx:if="{{currentBaby}}" class="content">
+    <view class="stats-card card">
+      <view class="stats-header flex-between">
+        <view class="stats-title">今日喂养统计</view>
+        <view class="stats-date">{{todayDate}}</view>
+      </view>
+      <view class="stats-row flex-between">
+        <view class="stat-item">
+          <view class="stat-value text-primary">{{todayFeedings.length}}</view>
+          <view class="stat-label text-secondary">次数</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value text-primary">{{todayTotalMilk}}</view>
+          <view class="stat-label text-secondary">总奶量(ml)</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value text-primary">{{avgMilk}}</view>
+          <view class="stat-label text-secondary">平均(ml)</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="add-btn-wrapper">
+      <button class="add-feeding-btn btn-primary" bindtap="showAddModal">
+        <x-icon name="plus" size="{{32}}" color="#FFFFFF" />
+        <text>记录喂养</text>
+      </button>
+    </view>
+
+    <view wx:if="{{feedings.length > 0}}" class="feedings-list">
+      <view wx:for="{{feedings}}" wx:key="id" class="feeding-card card">
+        <view class="feeding-header flex-between">
+          <view class="feeding-date">{{item.dateText}}</view>
+          <view class="feeding-actions">
+            <view class="feeding-edit" bindtap="editFeeding" data-id="{{item.id}}">
+              <x-icon name="edit" size="{{32}}" color="#999999" />
+            </view>
+            <view class="feeding-delete" bindtap="deleteFeeding" data-id="{{item.id}}">
+              <x-icon name="trash" size="{{32}}" color="#999999" />
+            </view>
+          </view>
+        </view>
+        <view class="feeding-body flex-between">
+          <view class="feeding-info">
+            <view class="feeding-type">
+              <x-icon name="{{item.type === 'breast' ? 'breast' : 'milk'}}" size="{{28}}" color="#666666" />
+              <text>{{item.type === 'breast' ? '母乳' : '配方奶'}}</text>
+            </view>
+            <view class="feeding-time text-secondary">{{item.timeText}}</view>
+          </view>
+          <view class="feeding-amount">
+            <view class="amount-value text-primary">{{item.amount}}ml</view>
+          </view>
+        </view>
+        <view wx:if="{{item.note}}" class="feeding-note text-secondary">
+          {{item.note}}
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{feedings.length === 0}}" class="no-data">
+      <view class="no-data-icon">
+        <x-icon name="bottle" size="{{80}}" color="#FF8FAB" />
+      </view>
+      <view class="no-data-text">暂无喂养记录</view>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showModal}}" class="modal-mask" bindtap="hideModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">{{editingId ? '编辑喂养' : '记录喂养'}}</view>
+      <view class="modal-close" bindtap="hideModal">
+        <x-icon name="x" size="{{40}}" color="#999999" />
+      </view>
+    </view>
+    <view class="modal-body">
+      <view class="form-item">
+        <view class="form-label">喂养方式</view>
+        <view class="type-select flex">
+          <view class="type-option {{formData.type === 'breast' ? 'active' : ''}}" bindtap="selectType" data-type="breast">
+            <x-icon name="breast" size="{{32}}" color="{{formData.type === 'breast' ? '#FF8FAB' : '#666666'}}" />
+            <text>母乳</text>
+          </view>
+          <view class="type-option {{formData.type === 'formula' ? 'active' : ''}}" bindtap="selectType" data-type="formula">
+            <x-icon name="milk" size="{{32}}" color="{{formData.type === 'formula' ? '#FF8FAB' : '#666666'}}" />
+            <text>配方奶</text>
+          </view>
+        </view>
+      </view>
+      <view class="form-item">
+        <view class="form-label">奶量 (ml)</view>
+        <input class="form-input" type="number" placeholder="请输入奶量" value="{{formData.amount}}" bindinput="onInput" data-field="amount" />
+      </view>
+      <view class="form-item">
+        <view class="form-label">喂养时间</view>
+        <picker mode="time" value="{{formData.time}}" bindchange="onTimeChange">
+          <view class="form-picker">{{formData.time || '请选择时间'}}</view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <view class="form-label">备注 (可选)</view>
+        <input class="form-input" placeholder="添加备注" value="{{formData.note}}" bindinput="onInput" data-field="note" />
+      </view>
+    </view>
+    <view class="modal-footer flex">
+      <button class="modal-btn btn-secondary" bindtap="hideModal">取消</button>
+      <button class="modal-btn btn-primary" bindtap="saveFeeding">保存</button>
+    </view>
+  </view>
+</view>

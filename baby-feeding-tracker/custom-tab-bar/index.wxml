@@ -1,0 +1,18 @@
+<view class="tab-bar">
+  <view 
+    class="tab-item {{selected === index ? 'active' : ''}}" 
+    wx:for="{{list}}" 
+    wx:key="index"
+    bindtap="switchTab"
+    data-index="{{index}}"
+    data-path="{{item.pagePath}}"
+  >
+    <view class="tab-icon {{selected === index ? 'active' : ''}}">
+      <text wx:if="{{item.icon === 'home'}}">🏠</text>
+      <text wx:elif="{{item.icon === 'bottle'}}">🍼</text>
+      <text wx:elif="{{item.icon === 'ruler'}}">📏</text>
+      <text wx:elif="{{item.icon === 'baby'}}">👶</text>
+    </view>
+    <view class="tab-text">{{item.text}}</view>
+  </view>
+</view>

@@ -1,0 +1,181 @@
+<view class="container">
+  <view wx:if="{{!currentBaby}}" class="empty-state">
+    <view class="empty-icon">
+      <x-icon name="baby" size="{{80}}" color="#FF8FAB" />
+    </view>
+    <view class="empty-text">请先添加宝宝档案</view>
+    <button class="add-btn btn-primary" bindtap="goToProfile">去添加</button>
+  </view>
+
+  <view wx:if="{{currentBaby}}" class="content">
+    <view class="chart-tabs">
+      <view class="tab-item {{currentTab === 'weight' ? 'active' : ''}}" bindtap="switchTab" data-tab="weight">
+        体重曲线
+      </view>
+      <view class="tab-item {{currentTab === 'height' ? 'active' : ''}}" bindtap="switchTab" data-tab="height">
+        身高曲线
+      </view>
+    </view>
+
+    <view class="chart-card card">
+      <view class="chart-header">
+        <view class="chart-title">{{currentTab === 'weight' ? '体重' : '身高'}}生长曲线</view>
+        <view class="chart-unit">{{currentTab === 'weight' ? 'kg' : 'cm'}}</view>
+      </view>
+      <view wx:if="{{chartData}}" class="chart-wrapper">
+        <growth-chart 
+          chart-data="{{chartData}}" 
+          baby-records="{{babyRecords}}" 
+          chart-type="{{currentTab}}"
+        ></growth-chart>
+      </view>
+      <view wx:else class="chart-placeholder">
+        <view class="placeholder-text">暂无数据</view>
+        <view class="placeholder-desc">添加身高体重记录后显示曲线</view>
+      </view>
+    </view>
+
+    <view class="standard-card card">
+      <view class="standard-title">WHO标准百分位</view>
+      <view wx:if="{{currentStandard}}" class="standard-values">
+        <view class="value-item">
+          <view class="value-label">P3 (偏低)</view>
+          <view class="value-number">{{currentStandard.p3}}{{currentTab === 'weight' ? 'kg' : 'cm'}}</view>
+        </view>
+        <view class="value-item">
+          <view class="value-label">P15</view>
+          <view class="value-number">{{currentStandard.p15}}{{currentTab === 'weight' ? 'kg' : 'cm'}}</view>
+        </view>
+        <view class="value-item">
+          <view class="value-label">P50 (中位)</view>
+          <view class="value-number">{{currentStandard.p50}}{{currentTab === 'weight' ? 'kg' : 'cm'}}</view>
+        </view>
+        <view class="value-item">
+          <view class="value-label">P85</view>
+          <view class="value-number">{{currentStandard.p85}}{{currentTab === 'weight' ? 'kg' : 'cm'}}</view>
+        </view>
+        <view class="value-item">
+          <view class="value-label">P97 (偏高)</view>
+          <view class="value-number">{{currentStandard.p97}}{{currentTab === 'weight' ? 'kg' : 'cm'}}</view>
+        </view>
+      </view>
+      <view wx:else class="standard-loading">
+        <text>正在加载WHO标准数据...</text>
+      </view>
+      <view class="standard-legend-title">曲线说明</view>
+      <view class="standard-legend">
+        <view class="legend-item">
+          <view class="legend-line" style="background: #A8E6CF;"></view>
+          <view class="legend-text">P50 - 中位线（标准值）</view>
+        </view>
+        <view class="legend-item">
+          <view class="legend-line" style="background: #FFD4A3;"></view>
+          <view class="legend-text">P15-P85 - 正常范围</view>
+        </view>
+        <view class="legend-item">
+          <view class="legend-line" style="background: #FFB8B8;"></view>
+          <view class="legend-text">P3 - 偏低临界线</view>
+        </view>
+        <view class="legend-item">
+          <view class="legend-line" style="background: #7EC8E3;"></view>
+          <view class="legend-text">P97 - 偏高临界线</view>
+        </view>
+        <view class="legend-item">
+          <view class="legend-dot" style="background: #FF8C69;"></view>
+          <view class="legend-text">宝宝生长曲线</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="add-btn-wrapper">
+      <button class="add-growth-btn btn-primary" bindtap="showAddModal">
+        <x-icon name="plus" size="{{32}}" color="#FFFFFF" />
+        <text>记录身高体重</text>
+      </button>
+    </view>
+
+    <view wx:if="{{growths.length > 0}}" class="growth-list">
+      <view class="list-header">
+        <view class="list-title">历史记录</view>
+      </view>
+      <view wx:for="{{growths}}" wx:key="id" class="growth-card card">
+        <view class="growth-header flex-between">
+          <view class="growth-date">{{item.date}}</view>
+          <view class="growth-actions">
+            <view class="growth-edit" bindtap="editGrowth" data-id="{{item.id}}">
+              <x-icon name="edit" size="{{32}}" color="#999999" />
+            </view>
+            <view class="growth-delete" bindtap="deleteGrowth" data-id="{{item.id}}">
+              <x-icon name="trash" size="{{32}}" color="#999999" />
+            </view>
+          </view>
+        </view>
+        <view class="growth-body flex-between">
+          <view class="growth-item">
+            <view class="growth-value text-primary">{{item.weight}}kg</view>
+            <view class="growth-label text-secondary">体重</view>
+          </view>
+          <view class="growth-divider"></view>
+          <view class="growth-item">
+            <view class="growth-value text-primary">{{item.height}}cm</view>
+            <view class="growth-label text-secondary">身高</view>
+          </view>
+          <view class="growth-divider" wx:if="{{item.headCircumference}}"></view>
+          <view class="growth-item" wx:if="{{item.headCircumference}}">
+            <view class="growth-value text-primary">{{item.headCircumference}}cm</view>
+            <view class="growth-label text-secondary">头围</view>
+          </view>
+        </view>
+        <view wx:if="{{item.note}}" class="growth-note text-secondary">
+          {{item.note}}
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{growths.length === 0}}" class="no-data">
+      <view class="no-data-icon">
+        <x-icon name="ruler" size="{{80}}" color="#FF8FAB" />
+      </view>
+      <view class="no-data-text">暂无生长记录</view>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{showModal}}" class="modal-mask" bindtap="hideModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">{{editingId ? '编辑生长数据' : '记录生长数据'}}</view>
+      <view class="modal-close" bindtap="hideModal">
+        <x-icon name="x" size="{{40}}" color="#999999" />
+      </view>
+    </view>
+    <view class="modal-body">
+      <view class="form-item">
+        <view class="form-label">记录日期</view>
+        <picker mode="date" value="{{formData.date}}" bindchange="onDateChange">
+          <view class="form-picker">{{formData.date || '请选择日期'}}</view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <view class="form-label">体重 (kg)</view>
+        <input class="form-input" type="digit" placeholder="例如: 7.5" value="{{formData.weight}}" bindinput="onInput" data-field="weight" />
+      </view>
+      <view class="form-item">
+        <view class="form-label">身高 (cm)</view>
+        <input class="form-input" type="digit" placeholder="例如: 68" value="{{formData.height}}" bindinput="onInput" data-field="height" />
+      </view>
+      <view class="form-item">
+        <view class="form-label">头围 (cm，可选)</view>
+        <input class="form-input" type="digit" placeholder="例如: 42" value="{{formData.headCircumference}}" bindinput="onInput" data-field="headCircumference" />
+      </view>
+      <view class="form-item">
+        <view class="form-label">备注 (可选)</view>
+        <input class="form-input" placeholder="添加备注" value="{{formData.note}}" bindinput="onInput" data-field="note" />
+      </view>
+    </view>
+    <view class="modal-footer flex">
+      <button class="modal-btn btn-secondary" bindtap="hideModal">取消</button>
+      <button class="modal-btn btn-primary" bindtap="saveGrowth">保存</button>
+    </view>
+  </view>
+</view>

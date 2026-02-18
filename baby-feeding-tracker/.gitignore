@@ -1,0 +1,15 @@
+# 微信小程序
+node_modules/
+miniprogram_npm/
+.DS_Store
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 临时文件
+*.tmp
+*.temp

@@ -1,0 +1,17 @@
+<view class="growth-chart">
+  <canvas 
+    type="2d"
+    id="growthCanvas"
+    canvas-id="growthCanvas"
+    class="chart-canvas"
+    bindtouchstart="onTouchStart"
+    bindtouchmove="onTouchMove"
+    bindtouchend="onTouchEnd"
+  ></canvas>
+  <view class="tooltip" wx:if="{{tooltip.show}}" style="left: {{tooltip.x}}px; top: {{tooltip.y}}px;">
+    <view class="tooltip-content">
+      <view class="tooltip-title">{{tooltip.title}}</view>
+      <view class="tooltip-value">{{tooltip.value}}</view>
+    </view>
+  </view>
+</view>

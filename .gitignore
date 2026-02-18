@@ -1,0 +1,4 @@
+# Ignore .trae folder and other generated files
+.trae/
+.venv/
+*.log

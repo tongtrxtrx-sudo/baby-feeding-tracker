@@ -1,0 +1,143 @@
+<view class="container">
+  <view class="header-card card">
+    <view class="header-title">家庭共享</view>
+    <view class="header-desc">与配偶一起记录宝宝的成长</view>
+  </view>
+
+  <view wx:if="{{!cloudEnabled}}" class="cloud-setup card">
+    <view class="setup-icon">
+      <x-icon name="cloud" size="{{80}}" color="#667eea" />
+    </view>
+    <view class="setup-title">开通云开发</view>
+    <view class="setup-desc">需要先开通微信云开发才能使用云端共享功能</view>
+    <view class="setup-steps">
+      <view class="step-item">1. 点击微信开发者工具左侧"云开发"按钮</view>
+      <view class="step-item">2. 点击"开通"按钮（免费版即可）</view>
+      <view class="step-item">3. 开通后会看到"环境ID"（如 cloud1-xxx）</view>
+      <view class="step-item">4. 复制环境ID粘贴到下方输入框</view>
+      <view class="step-item">5. 点击"启用云同步"按钮</view>
+    </view>
+    <view class="form-item mt-xl">
+      <view class="form-label">云开发环境ID</view>
+      <input class="form-input" placeholder="例如: cloud1-xxxxx" value="{{cloudEnvId}}" bindinput="onEnvInput" />
+    </view>
+    <button class="setup-btn btn-primary mt-lg" bindtap="setupCloud">启用云同步</button>
+    <view class="cloud-hint mt-lg text-secondary">
+      提示：开通云开发后，邀请码功能和数据同步才能正常使用
+    </view>
+  </view>
+
+  <view wx:if="{{cloudEnabled}}" class="share-content">
+    <view class="my-baby card">
+      <view class="section-title">我的宝宝</view>
+      <view wx:if="{{currentBaby}}" class="baby-info">
+        <view class="baby-avatar">
+          <x-icon name="{{currentBaby.gender === 'boy' ? 'boy' : 'girl'}}" size="{{48}}" color="#FF8FAB" />
+        </view>
+        <view class="baby-detail">
+          <view class="baby-name">{{currentBaby.name}}</view>
+          <view class="baby-age text-secondary">{{ageText}}</view>
+        </view>
+        <view class="share-badge badge-success" wx:if="{{hasShareCode}}">
+          已分享
+        </view>
+      </view>
+      <view wx:if="{{!currentBaby}}" class="no-baby text-secondary">
+        请先在档案页面添加宝宝
+      </view>
+    </view>
+
+    <view wx:if="{{currentBaby}}" class="share-actions">
+      <view class="action-card card">
+        <view class="action-header flex-between">
+          <view class="action-title">创建邀请码</view>
+          <view class="action-icon">
+            <x-icon name="link" size="{{36}}" color="#FF8FAB" />
+          </view>
+        </view>
+        <view class="action-desc">生成6位邀请码，让配偶扫码加入</view>
+        <button class="action-btn btn-primary" bindtap="generateShareCode">
+          {{hasShareCode ? '重新生成邀请码' : '生成邀请码'}}
+        </button>
+        <view wx:if="{{shareCode}}" class="share-code-box">
+          <view class="share-code-label">邀请码</view>
+          <view class="share-code">{{shareCode}}</view>
+          <button class="copy-btn btn-outline mt-md" bindtap="copyShareCode">复制邀请码</button>
+        </view>
+      </view>
+
+      <view class="action-card card">
+        <view class="action-header flex-between">
+          <view class="action-title">加入家庭</view>
+          <view class="action-icon">
+            <x-icon name="users" size="{{36}}" color="#FF8FAB" />
+          </view>
+        </view>
+        <view class="action-desc">输入配偶分享的邀请码，加入共享</view>
+        <view class="form-item">
+          <input class="form-input" placeholder="请输入6位邀请码" value="{{inputShareCode}}" bindinput="onShareCodeInput" maxlength="6" />
+        </view>
+        <button class="action-btn btn-primary" bindtap="joinShare">加入共享</button>
+      </view>
+    </view>
+
+    <view class="sync-section card">
+      <view class="section-header flex-between">
+        <view class="section-title">数据同步</view>
+        <view class="sync-status">
+          <text class="status-dot {{syncing ? 'syncing' : ''}}"></text>
+          {{syncing ? '同步中...' : '已就绪'}}
+        </view>
+      </view>
+      <view class="sync-actions flex">
+        <button class="sync-btn btn-secondary flex-1 mr-md" bindtap="syncToCloud">
+          <x-icon name="upload" size="{{28}}" color="#666666" />
+          <text>上传数据</text>
+        </button>
+        <button class="sync-btn btn-primary flex-1" bindtap="syncFromCloud">
+          <x-icon name="download" size="{{28}}" color="#FFFFFF" />
+          <text>下载数据</text>
+        </button>
+      </view>
+      <view wx:if="{{lastSyncTime}}" class="last-sync text-secondary mt-md">
+        上次同步: {{lastSyncTime}}
+      </view>
+    </view>
+
+    <view class="shared-babies card" wx:if="{{sharedBabies.length > 0}}">
+      <view class="section-title">共享的宝宝</view>
+      <view wx:for="{{sharedBabies}}" wx:key="id" class="shared-baby-item">
+        <view class="shared-baby-avatar">
+          <x-icon name="{{item.gender === 'boy' ? 'boy' : 'girl'}}" size="{{40}}" color="#FF8FAB" />
+        </view>
+        <view class="shared-baby-info">
+          <view class="shared-baby-name">{{item.name}}</view>
+          <view class="shared-baby-source text-secondary">来自: {{item.shareFrom}}</view>
+        </view>
+        <button class="select-baby-btn btn-outline" bindtap="selectSharedBaby" data-id="{{item.id}}">
+          选择
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <view class="help-card card">
+    <view class="help-title">使用说明</view>
+    <view class="help-item">
+      <view class="help-num">1</view>
+      <view class="help-text">主人开通云开发并创建邀请码</view>
+    </view>
+    <view class="help-item">
+      <view class="help-num">2</view>
+      <view class="help-text">配偶输入邀请码加入共享</view>
+    </view>
+    <view class="help-item">
+      <view class="help-num">3</view>
+      <view class="help-text">双方都可以记录，数据自动同步</view>
+    </view>
+    <view class="help-item">
+      <view class="help-num">4</view>
+      <view class="help-text">定期点击同步按钮确保数据一致</view>
+    </view>
+  </view>
+</view>

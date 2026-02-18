@@ -1,0 +1,48 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/feeding/feeding",
+    "pages/growth/growth",
+    "pages/report/report",
+    "pages/profile/profile",
+    "pages/share/share"
+  ],
+  "cloud": true,
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFB6C1",
+    "navigationBarTitleText": "宝宝成长记录",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#FFF5F5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF6B9D",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/feeding/feeding",
+        "text": "喂养"
+      },
+      {
+        "pagePath": "pages/growth/growth",
+        "text": "生长"
+      },
+      {
+        "pagePath": "pages/report/report",
+        "text": "报告"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "档案"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

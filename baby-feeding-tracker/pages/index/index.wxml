@@ -1,0 +1,114 @@
+<view class="container">
+  <view wx:if="{{!currentBaby}}" class="empty-state">
+    <view class="empty-icon">
+      <x-icon name="baby" size="{{80}}" color="#FF8FAB" />
+    </view>
+    <view class="empty-text">请先添加宝宝档案</view>
+    <button class="add-btn btn-primary" bindtap="goToProfile">去添加</button>
+  </view>
+
+  <view wx:if="{{currentBaby}}" class="content">
+    <view class="welcome-card card">
+      <view class="welcome-text">
+        <view class="greeting">{{greetingText}}</view>
+        <view class="baby-name">{{currentBaby.name}} {{ageText}}</view>
+      </view>
+      <view class="welcome-actions">
+        <view class="welcome-icon">
+          <x-icon name="{{currentBaby.gender === 'boy' ? 'boy' : 'girl'}}" size="{{80}}" color="#FFFFFF" />
+        </view>
+        <view class="share-entry" bindtap="goToShare">
+          <view class="share-icon-wrap">
+            <x-icon name="users" size="{{36}}" color="#FFFFFF" />
+          </view>
+          <text class="share-text">共享</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="today-summary card">
+      <view class="summary-header flex-between">
+        <view class="summary-title">今日喂养</view>
+        <view class="summary-date">{{todayDate}}</view>
+      </view>
+      <view class="summary-stats flex-between">
+        <view class="stat-card">
+          <view class="stat-number text-primary">{{todayFeedings.length}}</view>
+          <view class="stat-label text-secondary">喂养次数</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-number text-primary">{{todayTotalMilk}}</view>
+          <view class="stat-label text-secondary">总奶量(ml)</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-number text-primary">{{lastFeedingTime}}</view>
+          <view class="stat-label text-secondary">上次喂养</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="week-chart card">
+      <view class="section-header">
+        <view class="section-title">一周奶量趋势</view>
+      </view>
+      <view class="chart-container">
+        <view class="chart-bars">
+          <view wx:for="{{weekMilkData}}" wx:key="index" class="chart-bar-wrapper">
+            <view class="chart-bar" style="height: {{item > 0 ? (item / maxMilk) * 100 : 0}}%">
+              <view wx:if="{{item > 0}}" class="bar-value">{{item}}</view>
+            </view>
+            <view class="bar-label">{{weekDays[index]}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="quick-actions">
+      <view class="action-card card" bindtap="goToFeeding">
+        <text class="action-emoji">🍼</text>
+        <view class="action-text">记录喂养</view>
+      </view>
+      <view class="action-card card" bindtap="goToGrowth">
+        <text class="action-emoji">📏</text>
+        <view class="action-text">记录身高体重</view>
+      </view>
+    </view>
+
+    <view wx:if="{{todayFeedings.length > 0}}" class="recent-feedings card">
+      <view class="section-header flex-between">
+        <view class="section-title">最近喂养</view>
+        <view class="section-more text-primary" bindtap="goToFeeding">查看全部 ></view>
+      </view>
+      <view wx:for="{{todayFeedings}}" wx:key="id" class="feeding-item">
+        <view class="feeding-time text-secondary">{{item.timeText}}</view>
+        <view class="feeding-info flex-between">
+          <view class="feeding-type">
+            <x-icon name="{{item.type === 'breast' ? 'breast' : 'milk'}}" size="{{24}}" color="#666666" />
+            <text>{{item.type === 'breast' ? '母乳' : '配方奶'}}</text>
+          </view>
+          <view class="feeding-amount text-primary">{{item.amount}}ml</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{latestGrowth}}" class="growth-card card">
+      <view class="section-header">
+        <view class="section-title">最新生长记录</view>
+      </view>
+      <view class="growth-stats flex-between">
+        <view class="growth-stat">
+          <view class="growth-value text-primary">{{latestGrowth.weight}}kg</view>
+          <view class="growth-label text-secondary">体重</view>
+        </view>
+        <view class="growth-stat">
+          <view class="growth-value text-primary">{{latestGrowth.height}}cm</view>
+          <view class="growth-label text-secondary">身高</view>
+        </view>
+        <view class="growth-stat">
+          <view class="growth-value text-secondary">{{latestGrowth.date}}</view>
+          <view class="growth-label text-secondary">记录日期</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

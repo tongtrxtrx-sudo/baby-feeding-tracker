@@ -1,0 +1,25 @@
+<view class="feeding-card" bindtap="onTap">
+  <view class="card-icon {{record.type}}">
+    <text>{{typeIcon}}</text>
+  </view>
+  <view class="card-content">
+    <view class="card-header">
+      <view class="card-amount">{{record.amount}}ml</view>
+      <view class="card-time">{{timeText}}</view>
+    </view>
+    <view class="card-info">
+      <view class="info-tag {{record.type}}">
+        <text>{{typeText}}</text>
+      </view>
+      <view class="info-note" wx:if="{{record.note}}">{{record.note}}</view>
+    </view>
+  </view>
+  <view class="card-actions">
+    <view class="action-btn edit" catchtap="onEdit">
+      <text>✏️</text>
+    </view>
+    <view class="action-btn delete" catchtap="onDelete">
+      <text>🗑️</text>
+    </view>
+  </view>
+</view>

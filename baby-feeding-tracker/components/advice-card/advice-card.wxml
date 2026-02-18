@@ -1,0 +1,9 @@
+<view class="advice-card {{type}}">
+  <view class="card-icon">
+    <text>{{iconText}}</text>
+  </view>
+  <view class="card-content">
+    <view class="card-title">{{title}}</view>
+    <view class="card-text">{{content}}</view>
+  </view>
+</view>
