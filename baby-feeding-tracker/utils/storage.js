@@ -1,7 +1,8 @@
 const STORAGE_KEYS = {
   BABIES: 'babies',
   FEEDINGS: 'feedings',
-  GROWTHS: 'growths'
+  GROWTHS: 'growths',
+  POOPS: 'poops'
 }
 
 function generateId() {
@@ -110,6 +111,42 @@ function getTodayTotalMilk(babyId) {
   return todayFeedings.reduce((sum, f) => sum + (f.amount || 0), 0)
 }
 
+function addPoop(babyId, poop) {
+  const poops = getBabyData(babyId, STORAGE_KEYS.POOPS)
+  poop.id = generateId()
+  poop.createTime = Date.now()
+  poops.unshift(poop)
+  setBabyData(babyId, STORAGE_KEYS.POOPS, poops)
+  return poop
+}
+
+function getPoops(babyId) {
+  return getBabyData(babyId, STORAGE_KEYS.POOPS)
+}
+
+function getTodayPoops(babyId) {
+  const poops = getPoops(babyId)
+  const today = formatDate(new Date())
+  return poops.filter(p => formatDate(p.createTime) === today)
+}
+
+function deletePoop(babyId, poopId) {
+  let poops = getBabyData(babyId, STORAGE_KEYS.POOPS)
+  poops = poops.filter(p => p.id !== poopId)
+  setBabyData(babyId, STORAGE_KEYS.POOPS, poops)
+}
+
+function updatePoop(babyId, poopId, poopData) {
+  let poops = getBabyData(babyId, STORAGE_KEYS.POOPS)
+  const index = poops.findIndex(p => p.id === poopId)
+  if (index !== -1) {
+    poops[index] = { ...poops[index], ...poopData }
+    setBabyData(babyId, STORAGE_KEYS.POOPS, poops)
+    return poops[index]
+  }
+  return null
+}
+
 module.exports = {
   generateId,
   formatDate,
@@ -126,5 +163,10 @@ module.exports = {
   updateGrowth,
   deleteGrowth,
   getTodayFeedings,
-  getTodayTotalMilk
+  getTodayTotalMilk,
+  addPoop,
+  getPoops,
+  getTodayPoops,
+  deletePoop,
+  updatePoop
 }

@@ -1,3 +1,5 @@
+@import './styles/variables.wxss';
+
 page {
   background-color: #FFF5F8;
   font-size: 28rpx;
@@ -11,6 +13,7 @@ page {
   padding-bottom: 200rpx;
 }
 
+/* 卡片样式 - 根据设计图调整 */
 .card {
   background: #FFFFFF;
   border-radius: 32rpx;
@@ -19,22 +22,25 @@ page {
   box-shadow: 0 4rpx 20rpx rgba(255, 107, 157, 0.1);
 }
 
+/* 按钮样式 - 优化文字居中 */
 .btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 96rpx;
-  line-height: 96rpx;
+  min-width: 160rpx;
+  padding: 0 48rpx;
   border-radius: 48rpx;
   font-size: 32rpx;
   font-weight: 600;
   border: none;
-  padding: 0;
   margin: 0;
   gap: 12rpx;
   box-sizing: border-box;
   text-align: center;
+  line-height: 1;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .btn::after {
@@ -60,6 +66,7 @@ page {
   border: 2rpx solid #FF6B9D;
 }
 
+/* 输入框样式 */
 .input {
   width: 100%;
   height: 96rpx;
@@ -77,19 +84,27 @@ page {
   border-color: #FF6B9D;
 }
 
+/* 文字工具类 */
 .text-primary { color: #FF6B9D; }
 .text-secondary { color: #999999; }
 .text-center { text-align: center; }
 
+/* Flex布局工具类 */
 .flex { display: flex; }
 .flex-col { flex-direction: column; }
 .flex-1 { flex: 1; }
 .items-center { align-items: center; }
 .justify-center { justify-content: center; }
 .justify-between { justify-content: space-between; }
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .gap-sm { gap: 16rpx; }
 .gap-md { gap: 24rpx; }
 
+/* 间距工具类 */
 .mt-sm { margin-top: 12rpx; }
 .mt-md { margin-top: 24rpx; }
 .mt-lg { margin-top: 32rpx; }
@@ -102,23 +117,28 @@ page {
 .p-md { padding: 24rpx; }
 .p-lg { padding: 32rpx; }
 
+/* 圆角工具类 */
 .rounded-md { border-radius: 24rpx; }
 .rounded-lg { border-radius: 32rpx; }
 .rounded-full { border-radius: 9999rpx; }
 
+/* 字体工具类 */
 .font-medium { font-weight: 500; }
 .font-bold { font-weight: 600; }
+.font-bolder { font-weight: 700; }
 .text-sm { font-size: 24rpx; }
 .text-md { font-size: 28rpx; }
 .text-lg { font-size: 32rpx; }
 .text-xl { font-size: 36rpx; }
 
+/* 空状态样式 */
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120rpx 40rpx;
+  padding: 160rpx 40rpx;
+  text-align: center;
 }
 
 .empty-icon {
@@ -134,6 +154,7 @@ page {
   font-weight: 500;
 }
 
+/* 区块标题 */
 .section-title {
   font-size: 36rpx;
   font-weight: 700;
@@ -141,6 +162,7 @@ page {
   margin-bottom: 24rpx;
 }
 
+/* 徽章样式 */
 .badge {
   display: inline-block;
   padding: 8rpx 24rpx;
@@ -154,29 +176,34 @@ page {
   color: #FFFFFF;
 }
 
+/* 按钮尺寸变体 */
 .btn-sm {
   height: 72rpx;
-  line-height: 72rpx;
+  min-width: 120rpx;
+  padding: 0 32rpx;
   font-size: 28rpx;
   border-radius: 36rpx;
 }
 
 .btn-lg {
-  height: 112rpx;
-  line-height: 112rpx;
-  font-size: 36rpx;
-  border-radius: 56rpx;
+  height: 104rpx;
+  min-width: 200rpx;
+  padding: 0 56rpx;
+  font-size: 34rpx;
+  border-radius: 52rpx;
 }
 
 .btn-round {
   width: 96rpx;
   height: 96rpx;
-  border-radius: 50%;
+  min-width: auto;
   padding: 0;
+  border-radius: 50%;
 }
 
 .btn-block {
   width: 100%;
+  min-width: auto;
 }
 
 .btn-icon {
@@ -185,6 +212,7 @@ page {
   justify-content: center;
 }
 
+/* 按钮点击效果 */
 .btn:active {
   opacity: 0.85;
   transform: scale(0.98);
@@ -196,4 +224,55 @@ page {
 
 .btn-secondary:active {
   background: #FFF5F8;
+}
+
+/* 列表项样式 */
+.list-item {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #FFE4E8;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+/* 统计卡片样式 */
+.stat-card {
+  flex: 1;
+  text-align: center;
+  padding: 36rpx 24rpx;
+  background: linear-gradient(180deg, #FFF5F8 0%, #FFE4E8 100%);
+  border-radius: 28rpx;
+}
+
+.stat-number {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #FF6B9D;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999999;
+  font-weight: 500;
+}
+
+/* 分割线 */
+.divider {
+  width: 1rpx;
+  height: 72rpx;
+  background: #FFE4E8;
+}
+
+/* 渐变背景 */
+.bg-gradient {
+  background: linear-gradient(135deg, #FFB6C1 0%, #FF6B9D 100%);
+}
+
+/* 毛玻璃效果 */
+.glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16rpx);
+  border-radius: 24rpx;
 }

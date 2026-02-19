@@ -1,7 +1,7 @@
 <view class="container">
   <view wx:if="{{!currentBaby}}" class="empty-state">
     <view class="empty-icon">
-      <x-icon name="baby" size="{{80}}" color="#FF8FAB" />
+      <text style="font-size: 80rpx;">👶</text>
     </view>
     <view class="empty-text">请先添加宝宝档案</view>
     <button class="add-btn btn-primary" bindtap="goToProfile">去添加</button>
@@ -10,49 +10,54 @@
   <view wx:if="{{currentBaby}}" class="content">
     <view class="stats-card card">
       <view class="stats-header flex-between">
-        <view class="stats-title">今日喂养统计</view>
+        <view class="stats-title">今日统计</view>
         <view class="stats-date">{{todayDate}}</view>
       </view>
       <view class="stats-row flex-between">
         <view class="stat-item">
           <view class="stat-value text-primary">{{todayFeedings.length}}</view>
-          <view class="stat-label text-secondary">次数</view>
+          <view class="stat-label text-secondary">喂养次数</view>
         </view>
         <view class="stat-item">
           <view class="stat-value text-primary">{{todayTotalMilk}}</view>
           <view class="stat-label text-secondary">总奶量(ml)</view>
         </view>
         <view class="stat-item">
-          <view class="stat-value text-primary">{{avgMilk}}</view>
-          <view class="stat-label text-secondary">平均(ml)</view>
+          <view class="stat-value text-primary">{{todayPoops.length}}</view>
+          <view class="stat-label text-secondary">大便次数</view>
         </view>
       </view>
     </view>
 
-    <view class="add-btn-wrapper">
-      <button class="add-feeding-btn btn-primary" bindtap="showAddModal">
-        <x-icon name="plus" size="{{32}}" color="#FFFFFF" />
+    <view class="add-btn-wrapper flex">
+      <button class="add-feeding-btn btn-primary flex-1 mr-md" bindtap="showAddModal">
+        <text style="font-size: 32rpx; margin-right: 8rpx;">🍼</text>
         <text>记录喂养</text>
+      </button>
+      <button class="add-poop-btn btn-secondary flex-1" bindtap="showAddPoopModal">
+        <text style="font-size: 32rpx; margin-right: 8rpx;">💩</text>
+        <text>记录大便</text>
       </button>
     </view>
 
-    <view wx:if="{{feedings.length > 0}}" class="feedings-list">
+    <view wx:if="{{feedings.length > 0 || poops.length > 0}}" class="records-list">
+      <!-- 喂养记录 -->
       <view wx:for="{{feedings}}" wx:key="id" class="feeding-card card">
         <view class="feeding-header flex-between">
           <view class="feeding-date">{{item.dateText}}</view>
           <view class="feeding-actions">
             <view class="feeding-edit" bindtap="editFeeding" data-id="{{item.id}}">
-              <x-icon name="edit" size="{{32}}" color="#999999" />
+              <text style="font-size: 32rpx;">✏️</text>
             </view>
             <view class="feeding-delete" bindtap="deleteFeeding" data-id="{{item.id}}">
-              <x-icon name="trash" size="{{32}}" color="#999999" />
+              <text style="font-size: 32rpx;">🗑️</text>
             </view>
           </view>
         </view>
         <view class="feeding-body flex-between">
           <view class="feeding-info">
             <view class="feeding-type">
-              <x-icon name="{{item.type === 'breast' ? 'breast' : 'milk'}}" size="{{28}}" color="#666666" />
+              <text style="font-size: 28rpx; margin-right: 8rpx;">{{item.type === 'breast' ? '🤱' : '🍼'}}</text>
               <text>{{item.type === 'breast' ? '母乳' : '配方奶'}}</text>
             </view>
             <view class="feeding-time text-secondary">{{item.timeText}}</view>
@@ -65,23 +70,55 @@
           {{item.note}}
         </view>
       </view>
+
+      <!-- 大便记录 -->
+      <view wx:for="{{poops}}" wx:key="id" class="poop-card card">
+        <view class="poop-header flex-between">
+          <view class="poop-date">{{item.dateText}}</view>
+          <view class="poop-actions">
+            <view class="poop-edit" bindtap="editPoop" data-id="{{item.id}}">
+              <text style="font-size: 32rpx;">✏️</text>
+            </view>
+            <view class="poop-delete" bindtap="deletePoop" data-id="{{item.id}}">
+              <text style="font-size: 32rpx;">🗑️</text>
+            </view>
+          </view>
+        </view>
+        <view class="poop-body flex-between">
+          <view class="poop-info">
+            <view class="poop-status">
+              <text style="font-size: 28rpx; margin-right: 8rpx;">💩</text>
+              <text wx:if="{{item.status === 'normal'}}">正常</text>
+              <text wx:if="{{item.status === 'diarrhea'}}">腹泻</text>
+              <text wx:if="{{item.status === 'constipation'}}">便秘</text>
+              <text wx:if="{{item.status === 'hard'}}">偏硬</text>
+              <text wx:if="{{item.status === 'watery'}}">水样</text>
+            </view>
+            <view class="poop-time text-secondary">{{item.timeText}}</view>
+          </view>
+        </view>
+        <view wx:if="{{item.note}}" class="poop-note text-secondary">
+          {{item.note}}
+        </view>
+      </view>
     </view>
 
-    <view wx:if="{{feedings.length === 0}}" class="no-data">
+    <view wx:if="{{feedings.length === 0 && poops.length === 0}}" class="no-data">
       <view class="no-data-icon">
-        <x-icon name="bottle" size="{{80}}" color="#FF8FAB" />
+        <text style="font-size: 80rpx;">📝</text>
       </view>
-      <view class="no-data-text">暂无喂养记录</view>
+      <view class="no-data-text">暂无记录</view>
     </view>
   </view>
 </view>
 
+<!-- 喂养记录弹窗 -->
 <view wx:if="{{showModal}}" class="modal-mask" bindtap="hideModal">
   <view class="modal-content" catchtap="stopPropagation">
     <view class="modal-header">
       <view class="modal-title">{{editingId ? '编辑喂养' : '记录喂养'}}</view>
       <view class="modal-close" bindtap="hideModal">
-        <x-icon name="x" size="{{40}}" color="#999999" />
+        <text style="font-size: 40rpx;">✕</text>
       </view>
     </view>
     <view class="modal-body">
@@ -89,11 +126,11 @@
         <view class="form-label">喂养方式</view>
         <view class="type-select flex">
           <view class="type-option {{formData.type === 'breast' ? 'active' : ''}}" bindtap="selectType" data-type="breast">
-            <x-icon name="breast" size="{{32}}" color="{{formData.type === 'breast' ? '#FF8FAB' : '#666666'}}" />
+            <text style="font-size: 32rpx; margin-right: 8rpx;">🤱</text>
             <text>母乳</text>
           </view>
           <view class="type-option {{formData.type === 'formula' ? 'active' : ''}}" bindtap="selectType" data-type="formula">
-            <x-icon name="milk" size="{{32}}" color="{{formData.type === 'formula' ? '#FF8FAB' : '#666666'}}" />
+            <text style="font-size: 32rpx; margin-right: 8rpx;">🍼</text>
             <text>配方奶</text>
           </view>
         </view>
@@ -116,6 +153,59 @@
     <view class="modal-footer flex">
       <button class="modal-btn btn-secondary" bindtap="hideModal">取消</button>
       <button class="modal-btn btn-primary" bindtap="saveFeeding">保存</button>
+    </view>
+  </view>
+</view>
+
+<!-- 大便记录弹窗 -->
+<view wx:if="{{showPoopModal}}" class="modal-mask" bindtap="hidePoopModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-header">
+      <view class="modal-title">{{editingPoopId ? '编辑大便' : '记录大便'}}</view>
+      <view class="modal-close" bindtap="hidePoopModal">
+        <text style="font-size: 40rpx;">✕</text>
+      </view>
+    </view>
+    <view class="modal-body">
+      <view class="form-item">
+        <view class="form-label">大便状态</view>
+        <view class="status-select">
+          <view class="status-option {{poopFormData.status === 'normal' ? 'active' : ''}}" bindtap="selectPoopStatus" data-status="normal">
+            <text style="font-size: 28rpx; margin-right: 8rpx;">✅</text>
+            <text>正常</text>
+          </view>
+          <view class="status-option {{poopFormData.status === 'diarrhea' ? 'active' : ''}}" bindtap="selectPoopStatus" data-status="diarrhea">
+            <text style="font-size: 28rpx; margin-right: 8rpx;">💧</text>
+            <text>腹泻</text>
+          </view>
+          <view class="status-option {{poopFormData.status === 'constipation' ? 'active' : ''}}" bindtap="selectPoopStatus" data-status="constipation">
+            <text style="font-size: 28rpx; margin-right: 8rpx;">🪨</text>
+            <text>便秘</text>
+          </view>
+          <view class="status-option {{poopFormData.status === 'hard' ? 'active' : ''}}" bindtap="selectPoopStatus" data-status="hard">
+            <text style="font-size: 28rpx; margin-right: 8rpx;">🟤</text>
+            <text>偏硬</text>
+          </view>
+          <view class="status-option {{poopFormData.status === 'watery' ? 'active' : ''}}" bindtap="selectPoopStatus" data-status="watery">
+            <text style="font-size: 28rpx; margin-right: 8rpx;">💦</text>
+            <text>水样</text>
+          </view>
+        </view>
+      </view>
+      <view class="form-item">
+        <view class="form-label">时间</view>
+        <picker mode="time" value="{{poopFormData.time}}" bindchange="onPoopTimeChange">
+          <view class="form-picker">{{poopFormData.time || '请选择时间'}}</view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <view class="form-label">备注 (可选)</view>
+        <input class="form-input" placeholder="添加备注" value="{{poopFormData.note}}" bindinput="onPoopInput" data-field="note" />
+      </view>
+    </view>
+    <view class="modal-footer flex">
+      <button class="modal-btn btn-secondary" bindtap="hidePoopModal">取消</button>
+      <button class="modal-btn btn-primary" bindtap="savePoop">保存</button>
     </view>
   </view>
 </view>

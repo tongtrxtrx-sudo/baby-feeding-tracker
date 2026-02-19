@@ -2,7 +2,6 @@
   "navigationBarTitleText": "生长曲线",
   "enablePullDownRefresh": false,
   "usingComponents": {
-    "growth-chart": "/components/growth-chart/growth-chart",
-    "x-icon": "/components/x-icon/x-icon"
+    "growth-chart": "/components/growth-chart/growth-chart"
   }
 }

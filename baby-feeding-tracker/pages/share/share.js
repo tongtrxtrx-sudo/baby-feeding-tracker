@@ -23,6 +23,7 @@ Page({
     cloudEnabled: false,
     cloudEnvId: '',
     currentBaby: null,
+    babies: [],
     ageText: '',
     shareCode: '',
     inputShareCode: '',
@@ -228,7 +229,6 @@ Page({
             baby = await cloud.downloadBaby(shareInfo.babyId)
           }
         } catch (e) {
-          console.log('云端获取分享失败', e)
           wx.hideLoading()
           wx.showToast({ title: '云端连接失败', icon: 'none' })
           return
@@ -297,6 +297,10 @@ Page({
 
   async syncToCloud() {
     if (!this.data.currentBaby) return
+    if (!cloud) {
+      wx.showToast({ title: '云开发模块不可用', icon: 'none' })
+      return
+    }
 
     this.setData({ syncing: true })
     wx.showLoading({ title: '上传中...' })
@@ -322,6 +326,10 @@ Page({
 
   async syncFromCloud() {
     if (!this.data.currentBaby) return
+    if (!cloud) {
+      wx.showToast({ title: '云开发模块不可用', icon: 'none' })
+      return
+    }
 
     this.setData({ syncing: true })
     wx.showLoading({ title: '下载中...' })
@@ -342,54 +350,6 @@ Page({
       wx.hideLoading()
       this.setData({ syncing: false })
       wx.showToast({ title: '下载失败', icon: 'none' })
-    }
-  },
-
-  async syncAll() {
-    if (!this.data.cloudEnabled) return
-
-    this.setData({ syncing: true })
-    wx.showLoading({ title: '同步中...' })
-
-    try {
-      const result = await cloud.syncAllBabiesFromCloud()
-      
-      wx.hideLoading()
-      this.setData({ syncing: false })
-
-      if (result.success) {
-        wx.showToast({ title: `同步成功：${result.synced}个宝宝`, icon: 'success' })
-      } else {
-        wx.showToast({ title: `同步完成：${result.synced}成功，${result.failed}失败`, icon: 'none' })
-      }
-    } catch (e) {
-      wx.hideLoading()
-      this.setData({ syncing: false })
-      wx.showToast({ title: '同步失败', icon: 'none' })
-    }
-  },
-
-  async uploadAll() {
-    if (!this.data.cloudEnabled) return
-
-    this.setData({ syncing: true })
-    wx.showLoading({ title: '上传中...' })
-
-    try {
-      const result = await cloud.syncAllBabiesToCloud()
-      
-      wx.hideLoading()
-      this.setData({ syncing: false })
-
-      if (result.success) {
-        wx.showToast({ title: `上传成功：${result.synced}个宝宝`, icon: 'success' })
-      } else {
-        wx.showToast({ title: `上传完成：${result.synced}成功，${result.failed}失败`, icon: 'none' })
-      }
-    } catch (e) {
-      wx.hideLoading()
-      this.setData({ syncing: false })
-      wx.showToast({ title: '上传失败', icon: 'none' })
     }
   }
 })

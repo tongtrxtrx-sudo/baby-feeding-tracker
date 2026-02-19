@@ -1,7 +1,7 @@
 <view class="container">
   <view wx:if="{{!currentBaby && babies.length === 0}}" class="empty-state">
     <view class="empty-icon">
-      <x-icon name="baby" size="{{80}}" color="#FF8FAB" />
+      <text style="font-size: 80rpx;">👶</text>
     </view>
     <view class="empty-text">还没有宝宝档案</view>
     <view class="empty-desc">添加第一个宝宝开始记录吧</view>
@@ -48,7 +48,7 @@
       <view class="flex-between">
         <view class="baby-item-info">
           <view class="baby-item-name {{item.id === currentBaby.id ? 'active' : ''}}">
-            <x-icon name="{{item.gender === 'boy' ? 'boy' : 'girl'}}" size="{{32}}" color="#FF8FAB" />
+            <text style="font-size: 32rpx; margin-right: 8rpx;">{{item.gender === 'boy' ? '👦' : '👧'}}</text>
             <text>{{item.name}}</text>
           </view>
           <view class="baby-item-detail text-secondary">{{item.birthDate}}</view>
@@ -70,7 +70,7 @@
     <view class="modal-header">
       <view class="modal-title">{{editingBaby ? '编辑宝宝' : '添加宝宝'}}</view>
       <view class="modal-close" bindtap="hideModal">
-        <x-icon name="x" size="{{40}}" color="#999999" />
+        <text style="font-size: 40rpx;">✕</text>
       </view>
     </view>
     <view class="modal-body">
@@ -82,11 +82,11 @@
         <view class="form-label">性别</view>
         <view class="gender-select flex">
           <view class="gender-option {{formData.gender === 'boy' ? 'active' : ''}}" bindtap="selectGender" data-gender="boy">
-            <x-icon name="boy" size="{{32}}" color="{{formData.gender === 'boy' ? '#FF8FAB' : '#666666'}}" />
+            <text style="font-size: 32rpx; margin-right: 8rpx;">👦</text>
             <text>男宝</text>
           </view>
           <view class="gender-option {{formData.gender === 'girl' ? 'active' : ''}}" bindtap="selectGender" data-gender="girl">
-            <x-icon name="girl" size="{{32}}" color="{{formData.gender === 'girl' ? '#FF8FAB' : '#666666'}}" />
+            <text style="font-size: 32rpx; margin-right: 8rpx;">👧</text>
             <text>女宝</text>
           </view>
         </view>

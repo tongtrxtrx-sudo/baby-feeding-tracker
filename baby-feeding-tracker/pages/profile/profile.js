@@ -2,6 +2,13 @@ const app = getApp()
 const storage = require('../../utils/storage.js')
 const growthStandard = require('../../utils/growth-standard.js')
 
+let cloud = null
+try {
+  cloud = require('../../utils/cloud.js')
+} catch (e) {
+  console.log('云开发模块不可用')
+}
+
 Page({
   data: {
     babies: [],
@@ -132,6 +139,11 @@ Page({
       app.setCurrentBaby(baby)
     }
     app.saveBabies()
+
+    // 自动上传到云端
+    if (cloud) {
+      cloud.uploadBaby(baby)
+    }
 
     this.hideModal()
     this.loadBabies()

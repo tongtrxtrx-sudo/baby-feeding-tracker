@@ -1,7 +1,4 @@
 {
   "navigationBarTitleText": "喂养记录",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "x-icon": "/components/x-icon/x-icon"
-  }
+  "enablePullDownRefresh": false
 }

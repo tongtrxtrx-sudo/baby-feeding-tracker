@@ -40,50 +40,19 @@ App({
   },
 
   async autoSyncOnLaunch() {
-    console.log('=== 自动同步检查 ===')
-    console.log('cloudEnabled:', this.globalData.cloudEnabled)
-    console.log('autoSyncEnabled:', this.globalData.autoSyncEnabled)
-    console.log('cloud:', !!cloud)
-    
-    if (!this.globalData.cloudEnabled || !this.globalData.autoSyncEnabled) {
-      console.log('自动同步条件不满足，跳过')
-      return
-    }
-    if (!cloud) {
-      console.log('cloud模块不可用，跳过')
-      return
-    }
+    if (!this.globalData.cloudEnabled || !this.globalData.autoSyncEnabled) return
+    if (!cloud) return
 
     try {
-      console.log('=== 开始自动同步 ===')
-
-      const babies = wx.getStorageSync('babies') || []
-      const sharedBabies = wx.getStorageSync('sharedBabies') || []
-      console.log('本地宝宝数量:', babies.length, '共享宝宝数量:', sharedBabies.length)
-
       const result = await cloud.syncAllBabiesFromCloud()
-      console.log('同步结果:', result)
-
       if (result.synced > 0) {
         wx.showToast({
           title: `已同步${result.synced}个宝宝数据`,
           icon: 'none',
           duration: 2000
         })
-      } else if (result.failed > 0) {
-        wx.showToast({
-          title: `同步失败：${result.failed}个`,
-          icon: 'none',
-          duration: 2000
-        })
-      } else {
-        console.log('没有需要同步的数据')
       }
-
-      console.log('=== 自动同步完成 ===')
-    } catch (e) {
-      console.error('自动同步失败:', e)
-    }
+    } catch (e) {}
   },
 
   async uploadCurrentBabyData() {
@@ -91,13 +60,8 @@ App({
     if (!this.globalData.currentBaby) return
 
     try {
-      const result = await cloud.syncDataToCloud(this.globalData.currentBaby)
-      if (result.success) {
-        console.log('当前宝宝数据上传成功')
-      }
-    } catch (e) {
-      console.error('上传当前宝宝数据失败:', e)
-    }
+      await cloud.syncDataToCloud(this.globalData.currentBaby)
+    } catch (e) {}
   },
 
   loadBabies() {

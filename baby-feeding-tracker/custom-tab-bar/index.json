@@ -1,6 +1,3 @@
 {
-  "component": true,
-  "usingComponents": {
-    "x-icon": "/components/x-icon/x-icon"
-  }
+  "component": true
 }

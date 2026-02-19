@@ -6,7 +6,7 @@
 
   <view wx:if="{{!cloudEnabled}}" class="cloud-setup card">
     <view class="setup-icon">
-      <x-icon name="cloud" size="{{80}}" color="#667eea" />
+      <text style="font-size: 80rpx;">☁️</text>
     </view>
     <view class="setup-title">开通云开发</view>
     <view class="setup-desc">需要先开通微信云开发才能使用云端共享功能</view>
@@ -32,7 +32,7 @@
       <view class="section-title">我的宝宝</view>
       <view wx:if="{{currentBaby}}" class="baby-info">
         <view class="baby-avatar">
-          <x-icon name="{{currentBaby.gender === 'boy' ? 'boy' : 'girl'}}" size="{{48}}" color="#FF8FAB" />
+          <text style="font-size: 48rpx;">{{currentBaby.gender === 'boy' ? '👦' : '👧'}}</text>
         </view>
         <view class="baby-detail">
           <view class="baby-name">{{currentBaby.name}}</view>
@@ -52,7 +52,7 @@
         <view class="action-header flex-between">
           <view class="action-title">创建邀请码</view>
           <view class="action-icon">
-            <x-icon name="link" size="{{36}}" color="#FF8FAB" />
+            <text style="font-size: 36rpx;">🔗</text>
           </view>
         </view>
         <view class="action-desc">生成6位邀请码，让配偶扫码加入</view>
@@ -70,7 +70,7 @@
         <view class="action-header flex-between">
           <view class="action-title">加入家庭</view>
           <view class="action-icon">
-            <x-icon name="users" size="{{36}}" color="#FF8FAB" />
+            <text style="font-size: 36rpx;">👨‍👩‍👧</text>
           </view>
         </view>
         <view class="action-desc">输入配偶分享的邀请码，加入共享</view>
@@ -91,11 +91,11 @@
       </view>
       <view class="sync-actions flex">
         <button class="sync-btn btn-secondary flex-1 mr-md" bindtap="syncToCloud">
-          <x-icon name="upload" size="{{28}}" color="#666666" />
+          <text style="font-size: 28rpx; margin-right: 8rpx;">⬆️</text>
           <text>上传数据</text>
         </button>
         <button class="sync-btn btn-primary flex-1" bindtap="syncFromCloud">
-          <x-icon name="download" size="{{28}}" color="#FFFFFF" />
+          <text style="font-size: 28rpx; margin-right: 8rpx;">⬇️</text>
           <text>下载数据</text>
         </button>
       </view>
@@ -108,13 +108,13 @@
       <view class="section-title">共享的宝宝</view>
       <view wx:for="{{sharedBabies}}" wx:key="id" class="shared-baby-item">
         <view class="shared-baby-avatar">
-          <x-icon name="{{item.gender === 'boy' ? 'boy' : 'girl'}}" size="{{40}}" color="#FF8FAB" />
+          <text style="font-size: 40rpx;">{{item.gender === 'boy' ? '👦' : '👧'}}</text>
         </view>
         <view class="shared-baby-info">
           <view class="shared-baby-name">{{item.name}}</view>
           <view class="shared-baby-source text-secondary">来自: {{item.shareFrom}}</view>
         </view>
-        <button class="select-baby-btn btn-outline" bindtap="selectSharedBaby" data-id="{{item.id}}">
+        <button class="select-baby-btn btn-outline" bindtap="selectBaby" data-id="{{item.id}}">
           选择
         </button>
       </view>

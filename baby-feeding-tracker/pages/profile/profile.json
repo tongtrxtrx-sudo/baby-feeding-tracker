@@ -1,6 +1,3 @@
 {
-  "navigationBarTitleText": "宝宝档案",
-  "usingComponents": {
-    "x-icon": "/components/x-icon/x-icon"
-  }
+  "navigationBarTitleText": "宝宝档案"
 }

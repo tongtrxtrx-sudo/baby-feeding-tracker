@@ -1,3 +1,0 @@
-<view class="x-icon" style="color: {{color}}; width: {{size}}rpx; height: {{size}}rpx;">
-  <rich-text nodes="{{svgContent}}" />
-</view>

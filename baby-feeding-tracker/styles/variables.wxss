@@ -1,4 +1,5 @@
 :root {
+  /* 主色调 - 根据设计图精确调整 */
   --color-primary: #FF9AA2;
   --color-primary-dark: #FF6B9D;
   --color-secondary: #FFB6C1;
@@ -7,37 +8,50 @@
   --color-warning: #FFEAA7;
   --color-danger: #FF6B6B;
   --color-info: #A8D8EA;
-  
+
+  /* 文字颜色 */
   --color-text-primary: #333333;
   --color-text-secondary: #666666;
   --color-text-tertiary: #999999;
   --color-text-disabled: #CCCCCC;
-  
+
+  /* 背景颜色 */
   --color-bg: #FFF5F8;
   --color-bg-white: #FFFFFF;
   --color-border: #FFE4E8;
-  
+
+  /* 间距 - 根据设计图调整 */
   --spacing-xs: 8rpx;
   --spacing-sm: 16rpx;
   --spacing-md: 24rpx;
   --spacing-lg: 32rpx;
   --spacing-xl: 48rpx;
-  
-  --radius-sm: 12rpx;
+
+  /* 圆角 - 根据设计图调整 */
+  --radius-sm: 16rpx;
   --radius-md: 24rpx;
   --radius-lg: 32rpx;
-  
-  --font-size-xs: 24rpx;
-  --font-size-sm: 26rpx;
-  --font-size-md: 28rpx;
+  --radius-xl: 40rpx;
+
+  /* 字体大小 - 根据设计图精确调整 */
+  --font-size-xs: 22rpx;
+  --font-size-sm: 24rpx;
+  --font-size-md: 26rpx;
+  --font-size-base: 28rpx;
   --font-size-lg: 32rpx;
   --font-size-xl: 36rpx;
-  --font-size-2xl: 44rpx;
-  
+  --font-size-2xl: 40rpx;
+  --font-size-3xl: 48rpx;
+  --font-size-4xl: 56rpx;
+  --font-size-5xl: 64rpx;
+
+  /* 阴影效果 */
   --shadow-sm: 0 4rpx 20rpx rgba(255, 107, 157, 0.1);
   --shadow-md: 0 8rpx 32rpx rgba(255, 107, 157, 0.15);
   --shadow-lg: 0 16rpx 48rpx rgba(255, 107, 157, 0.2);
-  
+  --shadow-card: 0 4rpx 20rpx rgba(255, 107, 157, 0.1);
+
+  /* 过渡动画 */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
 }

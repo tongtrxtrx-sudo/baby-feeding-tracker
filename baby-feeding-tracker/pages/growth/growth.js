@@ -189,19 +189,15 @@ Page({
       storage.updateGrowth(currentBaby.id, growth)
       wx.showToast({ title: '更新成功', icon: 'success' })
 
-      if (cloud && app.globalData.cloudEnabled) {
-        cloud.autoUploadGrowth(currentBaby.id, growth).catch(e => {
-          console.error('自动上传失败:', e)
-        })
+      if (cloud) {
+        cloud.autoUploadGrowth(currentBaby.id, growth)
       }
     } else {
       const newGrowth = storage.addGrowth(currentBaby.id, growth)
       wx.showToast({ title: '记录成功', icon: 'success' })
 
-      if (cloud && app.globalData.cloudEnabled) {
-        cloud.autoUploadGrowth(currentBaby.id, newGrowth).catch(e => {
-          console.error('自动上传失败:', e)
-        })
+      if (cloud) {
+        cloud.autoUploadGrowth(currentBaby.id, newGrowth)
       }
     }
     

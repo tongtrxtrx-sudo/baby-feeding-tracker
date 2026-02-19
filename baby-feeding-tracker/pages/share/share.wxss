@@ -255,11 +255,15 @@
 }
 
 .sync-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 88rpx;
-  line-height: 88rpx;
+  line-height: 1;
   font-size: 30rpx;
   font-weight: 600;
   border-radius: 16rpx;
+  padding: 0 24rpx;
 }
 
 .last-sync {

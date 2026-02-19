@@ -1,7 +1,7 @@
 <view class="container">
   <view wx:if="{{!currentBaby}}" class="empty-state">
     <view class="empty-icon">
-      <x-icon name="baby" size="{{80}}" color="#FF8FAB" />
+      <text style="font-size: 80rpx;">👶</text>
     </view>
     <view class="empty-text">请先添加宝宝档案</view>
     <button class="add-btn btn-primary" bindtap="goToProfile">去添加</button>
@@ -89,7 +89,7 @@
 
     <view class="add-btn-wrapper">
       <button class="add-growth-btn btn-primary" bindtap="showAddModal">
-        <x-icon name="plus" size="{{32}}" color="#FFFFFF" />
+        <text style="font-size: 32rpx; margin-right: 8rpx;">➕</text>
         <text>记录身高体重</text>
       </button>
     </view>
@@ -103,10 +103,10 @@
           <view class="growth-date">{{item.date}}</view>
           <view class="growth-actions">
             <view class="growth-edit" bindtap="editGrowth" data-id="{{item.id}}">
-              <x-icon name="edit" size="{{32}}" color="#999999" />
+              <text style="font-size: 32rpx;">✏️</text>
             </view>
             <view class="growth-delete" bindtap="deleteGrowth" data-id="{{item.id}}">
-              <x-icon name="trash" size="{{32}}" color="#999999" />
+              <text style="font-size: 32rpx;">🗑️</text>
             </view>
           </view>
         </view>
@@ -134,7 +134,7 @@
 
     <view wx:if="{{growths.length === 0}}" class="no-data">
       <view class="no-data-icon">
-        <x-icon name="ruler" size="{{80}}" color="#FF8FAB" />
+        <text style="font-size: 80rpx;">📏</text>
       </view>
       <view class="no-data-text">暂无生长记录</view>
     </view>
@@ -146,7 +146,7 @@
     <view class="modal-header">
       <view class="modal-title">{{editingId ? '编辑生长数据' : '记录生长数据'}}</view>
       <view class="modal-close" bindtap="hideModal">
-        <x-icon name="x" size="{{40}}" color="#999999" />
+        <text style="font-size: 40rpx;">✕</text>
       </view>
     </view>
     <view class="modal-body">

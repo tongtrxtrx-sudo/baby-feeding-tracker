@@ -1,7 +1,4 @@
 {
   "navigationBarTitleText": "家庭共享",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "x-icon": "/components/x-icon/x-icon"
-  }
+  "enablePullDownRefresh": false
 }

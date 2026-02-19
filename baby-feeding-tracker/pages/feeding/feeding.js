@@ -15,12 +15,21 @@ Page({
     todayFeedings: [],
     todayTotalMilk: 0,
     avgMilk: 0,
+    poops: [],
+    todayPoops: [],
     todayDate: '',
     showModal: false,
+    showPoopModal: false,
     editingId: null,
+    editingPoopId: null,
     formData: {
       type: 'formula',
       amount: '',
+      time: '',
+      note: ''
+    },
+    poopFormData: {
+      status: 'normal',
       time: '',
       note: ''
     }
@@ -41,6 +50,7 @@ Page({
     if (currentBaby) {
       this.updateTodayDate()
       this.loadFeedings()
+      this.loadPoops()
     }
   },
 
@@ -72,6 +82,21 @@ Page({
     })
   },
 
+  loadPoops() {
+    const poops = storage.getPoops(this.data.currentBaby.id)
+    const formattedPoops = poops.map(p => ({
+      ...p,
+      dateText: storage.formatDate(p.createTime),
+      timeText: p.time || storage.formatTime(p.createTime)
+    }))
+    const todayPoops = storage.getTodayPoops(this.data.currentBaby.id)
+
+    this.setData({
+      poops: formattedPoops,
+      todayPoops
+    })
+  },
+
   showAddModal() {
     const now = new Date()
     const hours = String(now.getHours()).padStart(2, '0')
@@ -82,6 +107,21 @@ Page({
       formData: {
         type: 'formula',
         amount: '',
+        time: `${hours}:${minutes}`,
+        note: ''
+      }
+    })
+  },
+
+  showAddPoopModal() {
+    const now = new Date()
+    const hours = String(now.getHours()).padStart(2, '0')
+    const minutes = String(now.getMinutes()).padStart(2, '0')
+    this.setData({
+      showPoopModal: true,
+      editingPoopId: null,
+      poopFormData: {
+        status: 'normal',
         time: `${hours}:${minutes}`,
         note: ''
       }
@@ -105,8 +145,28 @@ Page({
     }
   },
 
+  editPoop(e) {
+    const poopId = e.currentTarget.dataset.id
+    const poop = this.data.poops.find(p => p.id === poopId)
+    if (poop) {
+      this.setData({
+        showPoopModal: true,
+        editingPoopId: poopId,
+        poopFormData: {
+          status: poop.status || 'normal',
+          time: poop.time || '',
+          note: poop.note || ''
+        }
+      })
+    }
+  },
+
   hideModal() {
     this.setData({ showModal: false })
+  },
+
+  hidePoopModal() {
+    this.setData({ showPoopModal: false })
   },
 
   stopPropagation() {
@@ -120,6 +180,14 @@ Page({
     })
   },
 
+  onPoopInput(e) {
+    const field = e.currentTarget.dataset.field
+    const value = e.detail.value
+    this.setData({
+      [`poopFormData.${field}`]: value
+    })
+  },
+
   selectType(e) {
     const type = e.currentTarget.dataset.type
     this.setData({
@@ -127,9 +195,22 @@ Page({
     })
   },
 
+  selectPoopStatus(e) {
+    const status = e.currentTarget.dataset.status
+    this.setData({
+      'poopFormData.status': status
+    })
+  },
+
   onTimeChange(e) {
     this.setData({
       'formData.time': e.detail.value
+    })
+  },
+
+  onPoopTimeChange(e) {
+    this.setData({
+      'poopFormData.time': e.detail.value
     })
   },
 
@@ -153,25 +234,52 @@ Page({
       storage.updateFeeding(currentBaby.id, editingId, feedingData)
       wx.showToast({ title: '修改成功', icon: 'success' })
 
-      if (cloud && app.globalData.cloudEnabled) {
+      if (cloud) {
         const updatedFeeding = { ...feedingData, id: editingId }
-        cloud.autoUploadFeeding(currentBaby.id, updatedFeeding).catch(e => {
-          console.error('自动上传失败:', e)
-        })
+        cloud.autoUploadFeeding(currentBaby.id, updatedFeeding)
       }
     } else {
       const newFeeding = storage.addFeeding(currentBaby.id, feedingData)
       wx.showToast({ title: '记录成功', icon: 'success' })
 
-      if (cloud && app.globalData.cloudEnabled) {
-        cloud.autoUploadFeeding(currentBaby.id, newFeeding).catch(e => {
-          console.error('自动上传失败:', e)
-        })
+      if (cloud) {
+        cloud.autoUploadFeeding(currentBaby.id, newFeeding)
       }
     }
 
     this.hideModal()
     this.loadFeedings()
+  },
+
+  savePoop() {
+    const { status, time, note } = this.data.poopFormData
+    const { editingPoopId, currentBaby } = this.data
+
+    const poopData = {
+      status,
+      time,
+      note
+    }
+
+    if (editingPoopId) {
+      storage.updatePoop(currentBaby.id, editingPoopId, poopData)
+      wx.showToast({ title: '修改成功', icon: 'success' })
+
+      if (cloud) {
+        const updatedPoop = { ...poopData, id: editingPoopId }
+        cloud.autoUploadPoop(currentBaby.id, updatedPoop)
+      }
+    } else {
+      const newPoop = storage.addPoop(currentBaby.id, poopData)
+      wx.showToast({ title: '记录成功', icon: 'success' })
+
+      if (cloud) {
+        cloud.autoUploadPoop(currentBaby.id, newPoop)
+      }
+    }
+
+    this.hidePoopModal()
+    this.loadPoops()
   },
 
   deleteFeeding(e) {
@@ -183,6 +291,21 @@ Page({
         if (res.confirm) {
           storage.deleteFeeding(this.data.currentBaby.id, feedingId)
           this.loadFeedings()
+          wx.showToast({ title: '删除成功', icon: 'success' })
+        }
+      }
+    })
+  },
+
+  deletePoop(e) {
+    const poopId = e.currentTarget.dataset.id
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这条记录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          storage.deletePoop(this.data.currentBaby.id, poopId)
+          this.loadPoops()
           wx.showToast({ title: '删除成功', icon: 'success' })
         }
       }
