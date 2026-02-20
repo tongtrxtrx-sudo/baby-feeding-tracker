@@ -55,9 +55,8 @@
       <view class="chart-container">
         <view class="chart-bars">
           <view wx:for="{{weekMilkData}}" wx:key="index" class="chart-bar-wrapper">
-            <view class="chart-bar" style="height: {{item > 0 ? (item / maxMilk) * 100 : 0}}%">
-              <view wx:if="{{item > 0}}" class="bar-value">{{item}}</view>
-            </view>
+            <view wx:if="{{item > 0}}" class="bar-value">{{item}}</view>
+            <view class="chart-bar" style="height: {{item > 0 ? (item / maxMilk) * 140 : 0}}rpx"></view>
             <view class="bar-label">{{weekDays[index]}}</view>
           </view>
         </view>
