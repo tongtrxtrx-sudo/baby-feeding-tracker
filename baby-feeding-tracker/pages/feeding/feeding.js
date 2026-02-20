@@ -214,7 +214,7 @@ Page({
     })
   },
 
-  saveFeeding() {
+  async saveFeeding() {
     const { type, amount, time, note } = this.data.formData
     const { editingId, currentBaby } = this.data
 
@@ -230,28 +230,34 @@ Page({
       note
     }
 
-    if (editingId) {
-      storage.updateFeeding(currentBaby.id, editingId, feedingData)
-      wx.showToast({ title: '修改成功', icon: 'success' })
+    wx.showLoading({ title: '保存中...' })
 
-      if (cloud) {
-        const updatedFeeding = { ...feedingData, id: editingId }
-        cloud.autoUploadFeeding(currentBaby.id, updatedFeeding)
+    try {
+      let recordToUpload
+      if (editingId) {
+        storage.updateFeeding(currentBaby.id, editingId, feedingData)
+        recordToUpload = { ...feedingData, id: editingId }
+      } else {
+        recordToUpload = storage.addFeeding(currentBaby.id, feedingData)
       }
-    } else {
-      const newFeeding = storage.addFeeding(currentBaby.id, feedingData)
-      wx.showToast({ title: '记录成功', icon: 'success' })
 
-      if (cloud) {
-        cloud.autoUploadFeeding(currentBaby.id, newFeeding)
+      // 同步单条记录到云端
+      if (cloud && app.globalData.cloudEnabled) {
+        await cloud.uploadFeeding(currentBaby.id, recordToUpload)
       }
+
+      wx.hideLoading()
+      wx.showToast({ title: '保存成功', icon: 'success' })
+      this.hideModal()
+      this.loadFeedings()
+    } catch (e) {
+      wx.hideLoading()
+      console.error('保存喂养记录失败:', e)
+      wx.showToast({ title: '保存失败', icon: 'none' })
     }
-
-    this.hideModal()
-    this.loadFeedings()
   },
 
-  savePoop() {
+  async savePoop() {
     const { status, time, note } = this.data.poopFormData
     const { editingPoopId, currentBaby } = this.data
 
@@ -261,25 +267,31 @@ Page({
       note
     }
 
-    if (editingPoopId) {
-      storage.updatePoop(currentBaby.id, editingPoopId, poopData)
-      wx.showToast({ title: '修改成功', icon: 'success' })
+    wx.showLoading({ title: '保存中...' })
 
-      if (cloud) {
-        const updatedPoop = { ...poopData, id: editingPoopId }
-        cloud.autoUploadPoop(currentBaby.id, updatedPoop)
+    try {
+      let recordToUpload
+      if (editingPoopId) {
+        storage.updatePoop(currentBaby.id, editingPoopId, poopData)
+        recordToUpload = { ...poopData, id: editingPoopId }
+      } else {
+        recordToUpload = storage.addPoop(currentBaby.id, poopData)
       }
-    } else {
-      const newPoop = storage.addPoop(currentBaby.id, poopData)
-      wx.showToast({ title: '记录成功', icon: 'success' })
 
-      if (cloud) {
-        cloud.autoUploadPoop(currentBaby.id, newPoop)
+      // 同步单条记录到云端
+      if (cloud && app.globalData.cloudEnabled) {
+        await cloud.uploadPoop(currentBaby.id, recordToUpload)
       }
+
+      wx.hideLoading()
+      wx.showToast({ title: '保存成功', icon: 'success' })
+      this.hidePoopModal()
+      this.loadPoops()
+    } catch (e) {
+      wx.hideLoading()
+      console.error('保存大便记录失败:', e)
+      wx.showToast({ title: '保存失败', icon: 'none' })
     }
-
-    this.hidePoopModal()
-    this.loadPoops()
   },
 
   deleteFeeding(e) {
@@ -289,12 +301,32 @@ Page({
       content: '确定要删除这条记录吗？',
       success: (res) => {
         if (res.confirm) {
-          storage.deleteFeeding(this.data.currentBaby.id, feedingId)
-          this.loadFeedings()
-          wx.showToast({ title: '删除成功', icon: 'success' })
+          this.doDeleteFeeding(feedingId)
         }
       }
     })
+  },
+
+  async doDeleteFeeding(feedingId) {
+    wx.showLoading({ title: '删除中...' })
+
+    try {
+      // 先删除本地数据
+      storage.deleteFeeding(this.data.currentBaby.id, feedingId)
+
+      // 删除云端单条记录
+      if (cloud && app.globalData.cloudEnabled) {
+        await cloud.deleteFeeding(this.data.currentBaby.id, feedingId)
+      }
+
+      wx.hideLoading()
+      wx.showToast({ title: '删除成功', icon: 'success' })
+      this.loadFeedings()
+    } catch (e) {
+      wx.hideLoading()
+      console.error('删除喂养记录失败:', e)
+      wx.showToast({ title: '删除失败', icon: 'none' })
+    }
   },
 
   deletePoop(e) {
@@ -304,12 +336,32 @@ Page({
       content: '确定要删除这条记录吗？',
       success: (res) => {
         if (res.confirm) {
-          storage.deletePoop(this.data.currentBaby.id, poopId)
-          this.loadPoops()
-          wx.showToast({ title: '删除成功', icon: 'success' })
+          this.doDeletePoop(poopId)
         }
       }
     })
+  },
+
+  async doDeletePoop(poopId) {
+    wx.showLoading({ title: '删除中...' })
+
+    try {
+      // 先删除本地数据
+      storage.deletePoop(this.data.currentBaby.id, poopId)
+
+      // 删除云端单条记录
+      if (cloud && app.globalData.cloudEnabled) {
+        await cloud.deletePoop(this.data.currentBaby.id, poopId)
+      }
+
+      wx.hideLoading()
+      wx.showToast({ title: '删除成功', icon: 'success' })
+      this.loadPoops()
+    } catch (e) {
+      wx.hideLoading()
+      console.error('删除大便记录失败:', e)
+      wx.showToast({ title: '删除失败', icon: 'none' })
+    }
   },
 
   goToProfile() {

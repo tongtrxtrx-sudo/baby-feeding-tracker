@@ -10,14 +10,13 @@ App({
     currentBaby: null,
     babies: [],
     cloudEnabled: false,
-    autoSyncEnabled: true
+    autoSyncEnabled: false
   },
 
   onLaunch() {
     this.initCloud().then(() => {
       this.loadBabies()
       this.loadSharedBabies()
-      this.autoSyncOnLaunch()
     })
   },
 
@@ -37,31 +36,6 @@ App({
   loadSharedBabies() {
     const sharedBabies = wx.getStorageSync('sharedBabies') || []
     this.globalData.sharedBabies = sharedBabies
-  },
-
-  async autoSyncOnLaunch() {
-    if (!this.globalData.cloudEnabled || !this.globalData.autoSyncEnabled) return
-    if (!cloud) return
-
-    try {
-      const result = await cloud.syncAllBabiesFromCloud()
-      if (result.synced > 0) {
-        wx.showToast({
-          title: `已同步${result.synced}个宝宝数据`,
-          icon: 'none',
-          duration: 2000
-        })
-      }
-    } catch (e) {}
-  },
-
-  async uploadCurrentBabyData() {
-    if (!this.globalData.cloudEnabled || !cloud) return
-    if (!this.globalData.currentBaby) return
-
-    try {
-      await cloud.syncDataToCloud(this.globalData.currentBaby)
-    } catch (e) {}
   },
 
   loadBabies() {

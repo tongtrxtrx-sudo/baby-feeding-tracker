@@ -102,7 +102,7 @@ Page({
     })
   },
 
-  saveBaby() {
+  async saveBaby() {
     const { name, gender, birthDate, birthWeight, birthHeight } = this.data.formData
 
     if (!name) {
@@ -124,30 +124,39 @@ Page({
       createTime: this.data.editingBaby ? this.data.editingBaby.createTime : Date.now()
     }
 
-    let babies = this.data.babies
-    if (this.data.editingBaby) {
-      const index = babies.findIndex(b => b.id === this.data.editingBaby.id)
-      if (index !== -1) {
-        babies[index] = baby
+    wx.showLoading({ title: '保存中...' })
+
+    try {
+      let babies = this.data.babies
+      if (this.data.editingBaby) {
+        const index = babies.findIndex(b => b.id === this.data.editingBaby.id)
+        if (index !== -1) {
+          babies[index] = baby
+        }
+      } else {
+        babies.push(baby)
       }
-    } else {
-      babies.push(baby)
-    }
 
-    app.globalData.babies = babies
-    if (!app.globalData.currentBaby) {
-      app.setCurrentBaby(baby)
-    }
-    app.saveBabies()
+      app.globalData.babies = babies
+      if (!app.globalData.currentBaby) {
+        app.setCurrentBaby(baby)
+      }
+      app.saveBabies()
 
-    // 自动上传到云端
-    if (cloud) {
-      cloud.uploadBaby(baby)
-    }
+      // 同步单条宝宝信息到云端
+      if (cloud && app.globalData.cloudEnabled) {
+        await cloud.uploadBaby(baby)
+      }
 
-    this.hideModal()
-    this.loadBabies()
-    wx.showToast({ title: '保存成功', icon: 'success' })
+      wx.hideLoading()
+      wx.showToast({ title: '保存成功', icon: 'success' })
+      this.hideModal()
+      this.loadBabies()
+    } catch (e) {
+      wx.hideLoading()
+      console.error('保存宝宝失败:', e)
+      wx.showToast({ title: '保存失败', icon: 'none' })
+    }
   },
 
   selectBaby(e) {
@@ -180,7 +189,7 @@ Page({
   deleteBaby(e) {
     const babyId = e.currentTarget.dataset.id
     const baby = this.data.babies.find(b => b.id === babyId)
-    
+
     wx.showModal({
       title: '确认删除',
       content: `确定要删除宝宝"${baby.name}"吗？删除后该宝宝的所有数据将无法恢复。`,
@@ -188,23 +197,42 @@ Page({
       confirmColor: '#ff4d4f',
       success: (res) => {
         if (res.confirm) {
-          let babies = this.data.babies.filter(b => b.id !== babyId)
-          app.globalData.babies = babies
-          
-          if (app.globalData.currentBaby && app.globalData.currentBaby.id === babyId) {
-            app.globalData.currentBaby = babies.length > 0 ? babies[0] : null
-            if (babies.length > 0) {
-              app.setCurrentBaby(babies[0])
-            } else {
-              wx.removeStorageSync('currentBabyId')
-            }
-          }
-          app.saveBabies()
-          
-          this.loadBabies()
-          wx.showToast({ title: '已删除', icon: 'success' })
+          this.doDeleteBaby(babyId)
         }
       }
     })
+  },
+
+  async doDeleteBaby(babyId) {
+    wx.showLoading({ title: '删除中...' })
+
+    try {
+      // 先删除本地数据
+      let babies = this.data.babies.filter(b => b.id !== babyId)
+      app.globalData.babies = babies
+
+      if (app.globalData.currentBaby && app.globalData.currentBaby.id === babyId) {
+        app.globalData.currentBaby = babies.length > 0 ? babies[0] : null
+        if (babies.length > 0) {
+          app.setCurrentBaby(babies[0])
+        } else {
+          wx.removeStorageSync('currentBabyId')
+        }
+      }
+      app.saveBabies()
+
+      // 删除云端宝宝及其所有数据
+      if (cloud && app.globalData.cloudEnabled) {
+        await cloud.deleteBaby(babyId)
+      }
+
+      wx.hideLoading()
+      wx.showToast({ title: '已删除', icon: 'success' })
+      this.loadBabies()
+    } catch (e) {
+      wx.hideLoading()
+      console.error('删除宝宝失败:', e)
+      wx.showToast({ title: '删除失败', icon: 'none' })
+    }
   }
 })

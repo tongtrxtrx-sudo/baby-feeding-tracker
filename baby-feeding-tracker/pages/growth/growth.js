@@ -63,7 +63,7 @@ Page({
     const gender = currentBaby.gender === 'boy' ? 'boys' : 'girls'
     const ageInMonths = growthStandard.calculateAgeInMonths(currentBaby.birthDate)
     const standard = growthStandard.getStandardForAge(gender, currentTab, ageInMonths)
-    
+
     this.setData({ currentStandard: standard })
   },
 
@@ -127,7 +127,7 @@ Page({
     const growthId = e.currentTarget.dataset.id
     const growth = this.data.growths.find(g => g.id === growthId)
     if (!growth) return
-    
+
     this.setData({
       showModal: true,
       editingId: growthId,
@@ -162,7 +162,7 @@ Page({
     })
   },
 
-  saveGrowth() {
+  async saveGrowth() {
     const { formData, editingId } = this.data
     const { date, weight, height, headCircumference, note } = formData
     const currentBaby = this.data.currentBaby
@@ -184,25 +184,32 @@ Page({
       note
     }
 
-    if (editingId) {
-      growth.id = editingId
-      storage.updateGrowth(currentBaby.id, growth)
-      wx.showToast({ title: '更新成功', icon: 'success' })
+    wx.showLoading({ title: '保存中...' })
 
-      if (cloud) {
-        cloud.autoUploadGrowth(currentBaby.id, growth)
+    try {
+      let recordToUpload
+      if (editingId) {
+        growth.id = editingId
+        storage.updateGrowth(currentBaby.id, growth)
+        recordToUpload = growth
+      } else {
+        recordToUpload = storage.addGrowth(currentBaby.id, growth)
       }
-    } else {
-      const newGrowth = storage.addGrowth(currentBaby.id, growth)
-      wx.showToast({ title: '记录成功', icon: 'success' })
 
-      if (cloud) {
-        cloud.autoUploadGrowth(currentBaby.id, newGrowth)
+      // 同步单条记录到云端
+      if (cloud && app.globalData.cloudEnabled) {
+        await cloud.uploadGrowth(currentBaby.id, recordToUpload)
       }
+
+      wx.hideLoading()
+      wx.showToast({ title: '保存成功', icon: 'success' })
+      this.hideModal()
+      this.loadGrowths()
+    } catch (e) {
+      wx.hideLoading()
+      console.error('保存生长记录失败:', e)
+      wx.showToast({ title: '保存失败', icon: 'none' })
     }
-    
-    this.hideModal()
-    this.loadGrowths()
   },
 
   deleteGrowth(e) {
@@ -212,12 +219,32 @@ Page({
       content: '确定要删除这条记录吗？',
       success: (res) => {
         if (res.confirm) {
-          storage.deleteGrowth(this.data.currentBaby.id, growthId)
-          this.loadGrowths()
-          wx.showToast({ title: '删除成功', icon: 'success' })
+          this.doDeleteGrowth(growthId)
         }
       }
     })
+  },
+
+  async doDeleteGrowth(growthId) {
+    wx.showLoading({ title: '删除中...' })
+
+    try {
+      // 先删除本地数据
+      storage.deleteGrowth(this.data.currentBaby.id, growthId)
+
+      // 删除云端单条记录
+      if (cloud && app.globalData.cloudEnabled) {
+        await cloud.deleteGrowth(this.data.currentBaby.id, growthId)
+      }
+
+      wx.hideLoading()
+      wx.showToast({ title: '删除成功', icon: 'success' })
+      this.loadGrowths()
+    } catch (e) {
+      wx.hideLoading()
+      console.error('删除生长记录失败:', e)
+      wx.showToast({ title: '删除失败', icon: 'none' })
+    }
   },
 
   goToProfile() {
